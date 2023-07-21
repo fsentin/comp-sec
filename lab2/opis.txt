@@ -1,0 +1,43 @@
+
+     OPIS IZDRADENOG SUSTAVA  
+
+U data.txt se spremaju zapisi korisničkih imena i pripadne zastavice, salta i hasha. 
+Desno od korisnickog imena nalazi se razmak, a zatim zastavica (moze biti T ili F), 
+salt i hash lozinke kodirani svi zajedno pomocu Base64 (kako bi se izbjeglo printanje znaka za novi redak).
+
+Pri prijavi u sustav racuna se hash lozinke pomocu spremljenog salta i usporeduje s pohranjenim hashom. 
+Prijava je uspjesna ako su jednaki.
+
+
+struktura data.txt:
++-----------++------+----------+------------------+
+| username  || flag |   salt   |   passwordhash   |
++-----------++------+----------+------------------+
+| username  || flag |   salt   |   passwordhash   |
++-----------++------+----------+------------------+
+| username  || flag |   salt   |   passwordhash   |
++-----------++------+----------+------------------+
+
+na primjer:
+skoro Rm8wjenK6ShcEfNbuFVNlAQnHTRVZIQUS21dCli4DtaJntWDMjQa15yRfSZS
+mraktaritas RhgK/HfQmNaD2Rk3NXzcv1JU3mJi3/eWGk5uomNbIVKM1Tsf4l7OYVdhuyh7
+tomasevic RhzFX5/0ppMwBKy+0poc59uNj/ELWu2mB6PiJoDxudWJV8yoQKSXTzlv5foP
+filipovic Rjp0ONJfFeJvN8ZM5sGN1VHn5z4X/AO6u8zhvPwsRI6dG5Cm7WWLs8bbZLJX
+
+
+ ---------  SIGURNOST  ---------
+
+Sustav je siguran jer 
+- ne sprema zaporke vec njihov hash
+- koristi vec gotovu kriptografsku funkciju sazetka (PBKDF2) pa nema opasnosti od vlastite lose implementacije
+- za svaki hash koristi novi salt pa se dvije iste zaporke ne sifriraju jednako
+- zaporke tijekom obrade ne pohranjuje u String vec char[] koji je za Javu mnogo sigurniji
+- zaporke ne prikazuje na konzoli tijekom njihovog unosa
+- zahtjeva od korisnika minimalnu kompleksnost zaporke -> najmanja duljina 8, sadrzava barem jedno veliko i malo slovo te znamenku
+
+
+---------  OGRANICENJA  ---------
+
+Citanje iz datoteke bi moglo biti malo inteligentnije, naime u slucaju velikog broja korisnika nije bas pametno procitati cijelu datoteku u memoriju.
+S ovime na umu nadam se da mi necete to zamjeriti, implementirala bih bolje da je to bio jedan od zahtjeva, ipak u ovoj vjezbi sam se vise fokusirala 
+na osnovne sigurnosne zahtjeve.

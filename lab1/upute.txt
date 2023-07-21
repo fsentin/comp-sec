@@ -1,0 +1,53 @@
+// -------- OPCENITO --------
+//  Rjesenje je pisano u Javi. Ja sam koristila Java 15, ali nisu koristene nikakve napredne strukture pa bi trebalo raditi i za Javu 11.
+//  Koristeni su java.io, java.nio, java.security, javax.crypto gotovi paketi.
+
+// Kada se raspakira zip arhiva treba se iz komandne linije pozicionirati u direktorij src gdje su sljedece datoteke:
+//    PassMan.java - ishodisna klasa
+//    Utils.java - klasa sa statickim fjama za potrebe kriptografije
+// U nastavku se sve izvodi u tom radnom direktoriju.
+
+
+
+// ------- PREVODENJE --------
+// Uklonjeni su paketi s pocetka datoteka pa je moguce sve jednostavno prevesti.
+
+// Kompajliramo sve datoteke(2) u direktoriju gdje su smjestene da dobijemo .class datoteke potrebne za izvodenje. 
+$ javac *.java
+
+// Trebali bi se stvoriti PassMan.class i Utils.class u radnom direktoriju. 
+// Znam da nije najsretnije rjesenje imati ih u zajednickom direktoriju, 
+// ali je najbezbolnije pa cete brze moci testirati moj program.
+
+
+
+// ------- OSNOVNI TIJEK PROGRAMA --------
+
+// Pokrenemo program inicijaliziranjem glavne zaporke, nakon izvodenja u direktoriju 
+// imamo novu datoteku data.txt u koju se spremaju sifrirane adrese i zaporke
+$ java PassMan init mAsterPasswrd
+Password manager initialized. 
+
+// Spremanje nove zaporke
+$ java PassMan put mAsterPasswrd www.fer.hr neprobojnAsifrA
+Stored password for www.fer.hr
+
+// Dohvacanje zaporke
+$ java PassMan get mAsterPasswrd www.fer.hr
+Password for www.fer.hr is: neprobojnAsifrA
+
+
+
+//  ------- IZNIMNE SITUACIJE ------- 
+
+// Pozivanje bilo koje funkcije prije nego je inicijalizacija obavljena.
+$ java PassMan get mAsterPasswrd https://trello.com/
+Sorry, the entered command is not allowed.
+
+// Pozivanje inicijalizacije nakon sto je vec inicijalizirana baza s master zaporkom.
+$ java PassMan init mAsterPasswrd
+Sorry, the entered command is not allowed.
+
+// Ako dode do greske u izvodenju, upisana je kriva sifra ili je doslo do korupcije baze, ispisuje se poruka o greski
+$ java PassMan get krivaSifra www.fer.hr
+Sorry, something went wrong.

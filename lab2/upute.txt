@@ -1,0 +1,119 @@
+// -------- OPCENITO --------
+
+// 
+//   Rjesenje je pisano u Javi. Ja sam koristila Java 15, ali nisu koristene nikakve napredne strukture pa bi trebalo raditi i za Javu 11.
+//   Koristeni su java.io, java.nio, java.util, java.security, javax.crypto gotovi paketi.
+//
+//   VAZNO: treba pokretati iz komandne linije, a ne IDE jer u vecini njih ne radi "nevidljivo" citanje s konzole 
+//
+//   Kada se raspakira zip arhiva treba se iz komandne linije pozicionirati u direktorij src gdje su sljedece datoteke:
+//       
+//       UserMan.java - ishodisna klasa za admina
+//       Login.java   - ishodisna klasa za korisnike
+//       Service.java - klasa sa statickim fjama i implementacijskim detaljima (gornje dvije klase izgledaju vise kao pseudokod)
+//       Crypto.java  - klasa sa statickim fjama za potrebe kriptografije i sigurnosti
+//       Utils.java   - pomocna klasa sa statickim fjama za opcenite potrebe (pisanje u datoteku, mapiranje...)
+//   
+//   U nastavku se sve izvodi u tom radnom direktoriju.
+
+
+
+// ------- PREVODENJE --------
+// Uklonjeni su paketi s pocetka datoteka pa je moguce sve jednostavno prevesti.
+
+// Kompajliramo sve datoteke u direktoriju gdje su smjestene da dobijemo .class datoteke potrebne za izvodenje. 
+$ javac *.java
+
+//  Trebale bi se stvoriti .class datoteke u radnom direktoriju. 
+//  Znam da nije najsretnije rjesenje imati ih u zajednickom direktoriju, 
+//  ali je najbezbolnije pa cete brze moci testirati moj program.
+
+
+
+// ------- OSNOVNI TIJEK PROGRAMA --------
+
+// dodavanje korisnika u sustav (lozinke su grozne radi lakseg testiranja):
+$ java UserMan add fani
+Password: Fani1234
+Repeat password: Fani1234
+Success!
+
+// promjena korisnikove lozinke:
+$ java UserMan pswd fani
+Enter new password!
+Password: Fani12345
+Repeat password: Fani12345
+Success!
+
+
+// prijava korisnika:
+$ java Login fani
+Password: Fani12345
+Success!
+
+// forsiranje korisnika da promjeni lozinku:
+$ java UserMan force fani
+User will be requested to change password on next login.
+
+// prijava korisnika pri kojoj mora promjeniti lozinku:
+$ java Login fani
+Password: Fani12345
+Enter new password!
+Password: Fani123456
+Repeat password: Fani123456
+Success!
+
+// brisanje korisnika:
+$ java UserMan del fani
+Sucess!
+
+
+
+// ------- IZNIMNE SITUACIJE ------- 
+
+// neispravna komanda:
+$ java UserMan ad fani
+Sorry, the entered command is improper.
+
+// generalne greske pri izvodenju (npr. ako nema nijednog korisnika u sustavu)
+$ java Login fani
+Password: bla
+Sorry, something went wrong.
+
+// dodavanje vec postojeceg korisnika:
+$ java UserMan add fani
+Sorry, this user already exists.
+
+// krivi ponovni unos lozinke (isto se dogada i kod drugih funkcija koje postavljaju lozinku):
+$ java UserMan add fani
+Password: Fani1234
+Repeat password: Fani12
+Sorry, failed. Password mismatch detected.
+
+// unos prejednostavne lozinke (isto se dogada i kod drugih funkcija koje postavljaju lozinku):
+$ java UserMan add fani
+Password: bla
+Repeat password: bla
+Sorry, your password is not complex enough. Make sure it meets these requirements:
+ > at least 8 characters long
+ > contains one or more digits
+ > contains one or more lower case letters
+ > contains one or more upper case letters
+Try again.
+
+// unos krive sifre pri prijavi:
+$ java Login fani
+Passord: bla
+Sorry, username or password is incorrect.
+
+// unos stare lozinke kao nove:
+$ java Login fani
+Password: Fani1234
+Enter new password!
+Password: Fani1234
+Repeat pasword: Fani1234
+Sorry, you can't reuse the old password.
+
+// radnje nad nepostojecim korisnikom:
+$ java UserMan force fani
+Sorry, this user doesn't exist.

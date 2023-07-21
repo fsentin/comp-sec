@@ -1,0 +1,32 @@
+
+     OPIS IZDRADENOG SUSTAVA  
+
+
+ ---------  TIJEK PROGRAMA  ---------
+
+INICIJALNI POZIV
+stvaranje baze "data.txt" -> sifriranje probnog zapisa -> spremanje probnog zapisa u bazu 
+
+UPISIVANJE NOVE ZAPORKE 
+citanje iz baze -> dekodiranje -> mapiranje -> dodavanje novog zapisa u mapu -> tekstualiziranje mape -> sifriranje -> spremanje u bazu
+
+TRAZENJE ZAPORKE ZA DANU ADRESU
+citanje iz baze -> dekodiranje -> mapiranje -> trazenje po url -> pronalazak
+
+struktura data.txt:
++------+----+-----------------+-------+
+| salt | iv |   cypher text   |  tag  |
++------+----+-----------------+-------+
+
+
+
+ ---------  SIGURNOST  ---------
+
+Sustav je siguran jer 
+- ne sprema glavnu zaporku
+- generira kljuc za sifriranje iz glavne zaporke i sigurno nasumicnog broja (salt) s mnogo iteracija  i aktualnim algoritmom (PBKDF2 sa SHA256)
+- sifrira sve adrese i zaporke aktualnim algoritmom (AES-GCM) koji osigurava povjerljivost i integritet
+- sifrira sve adrese i zaporke odjednom pa napadac ne zna koji dio zapisa je adresa, a koji zaporka
+- randomizira sve zapise pri dodavanju novog zapisa
+- uvijek mijenja iv i salt pri sifriranju
+- koristi preporucane parametre za sifriranje
